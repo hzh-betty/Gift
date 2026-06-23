@@ -39,7 +39,12 @@ export default function TrackingProgress({ onComplete }) {
       // 卡片初始
       if (card) gsap.set(card, { y: 30, opacity: 0 })
 
-      tl.call(() => !cancelled && setActive(i))
+    tl.call(() => !cancelled && setActive(i))
+      .call(() => {
+        // 把当前卡片滚到地图下方可视区
+        const el = cardRefs.current[i]
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      })
         // 节点弹入
         .to(node, {
           scale: 1,
@@ -92,7 +97,8 @@ export default function TrackingProgress({ onComplete }) {
       role="region"
       aria-label="物流追踪"
     >
-      <div className="mb-6">
+      {/* 地图固定在顶部，文字卡片在下方滚动 */}
+      <div className="sticky top-0 z-10 -mx-5 mb-4 bg-gradient-to-b from-[#0b1437] via-[#0b1437] to-[#0b1437]/0 pb-2 pt-1">
         <RouteMap active={active} />
       </div>
       <div className="relative pl-2">

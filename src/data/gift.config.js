@@ -105,7 +105,6 @@ export const giftConfig = {
 
   // —— 照片墙：散落 Polaroid，按时间从早到晚排列 ——
   photos: [
-    { src: './photos/1.jpg',  caption: '看徐良演唱会', note: '那天阳光很好，你笑得像整片海都亮了。', date: '2026-05-23 · 夏', rot: -7 },
     { src: './photos/4.jpg',  caption: '大学军训',     note: '脱离高中苦海进入大学，感觉你活泼了许多。', date: '2025-09-15 · 秋', rot: 5 },
     { src: './photos/5.jpg',  caption: '国庆旅游',     note: '希望你能愉快地度过这个假期。', date: '2025-10-01 · 秋', rot: -4 },
     { src: './photos/6.jpg',  caption: '常州音乐节',   note: '现场的音乐太棒了，所有人都沉浸在旋律里。', date: '2025-10-02 · 秋', rot: 6 },
@@ -131,6 +130,7 @@ export const giftConfig = {
     { src: './photos/26.jpg', caption: '赏樱',         note: '樱花开了，一起去看看吧。', date: '2026-04-25 · 春', rot: 4 },
     { src: './photos/27.jpg', caption: '劳动节',       note: '劳动节聚餐，吃得很满足。', date: '2026-05-04 · 春', rot: -7 },
     { src: './photos/28.jpg', caption: '收集周边',     note: '又收集了好多徐良的周边，开心。', date: '2026-06-11 · 夏', rot: 6 },
+    { src: './photos/1.jpg',  caption: '看徐良演唱会', note: '那天阳光很好，你笑得像整片海都亮了。', date: '2026-05-23 · 夏', rot: -7 },
   ],
 
   // —— 流星许愿：吹完蜡烛后流星划过，点中许一愿 ——

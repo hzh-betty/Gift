@@ -48,12 +48,22 @@ export default function PhotoWall({ onDone }) {
   }
   const allViewed = viewed >= photos.length
 
+  const months = useMemo(() => {
+    const set = new Set(photos.map((p) => p.date.slice(0, 7)))
+    return [...set].sort()
+  }, [photos])
+  const monthIdxOf = (p) => months.indexOf(p.date.slice(0, 7))
+  const [timeIdx, setTimeIdx] = useState(months.length - 1)
+  const visibleCount = photos.filter((p) => monthIdxOf(p) <= timeIdx).length
+  const [cy, cm] = (months[timeIdx] || '').split('-')
+  const curLabel = `${cy}年 ${+cm}月`
+
   return (
     <div ref={rootRef} className="relative w-full overflow-y-auto safe-pt safe-pb">
       {/* 顶部标题 */}
       <div className="pointer-events-none absolute left-0 right-0 top-0 z-20 pt-8 text-center safe-pt">
         <p className="text-xs tracking-[0.3em] text-white/55">MEMORIES · 那些时光</p>
-        <h2 className="mt-1 text-xl font-semibold text-gradient">翻开我们的故事</h2>
+        <h2 className="mt-1 text-xl font-semibold text-gradient">{giftConfig.photoWallTitle}</h2>
       </div>
 
       {/* 散落照片场 */}
@@ -71,9 +81,13 @@ export default function PhotoWall({ onDone }) {
                 left: `${pos.x}%`,
                 top: `${pos.y}px`,
                 transform: `translateX(-50%) rotate(${p.rot || 0}deg)`,
+                pointerEvents: monthIdxOf(p) <= timeIdx ? 'auto' : 'none',
               }}
             >
-              <div className="relative" style={{ perspective: '1000px' }}>
+              <div
+                className="relative transition-opacity duration-300"
+                style={{ perspective: '1000px', opacity: monthIdxOf(p) <= timeIdx ? 1 : 0.12 }}
+              >
                 {/* 正面 */}
                 <div
                   className="relative rounded-sm bg-white p-2 pb-7 shadow-xl transition-transform duration-500"
@@ -113,19 +127,36 @@ export default function PhotoWall({ onDone }) {
         })}
       </div>
 
-      {/* 底部提示 + 继续 */}
-      <div className="relative z-20 flex flex-col items-center gap-2 pb-8 pt-4">
-        <p className="text-xs text-white/50">
-          {allViewed ? '都翻过啦，准备好继续了吗' : `点照片翻看 · ${viewed}/${photos.length}`}
-        </p>
-        <button
-          onClick={() => onDone && onDone()}
-          className={`flex items-center gap-1 rounded-full glass px-6 py-2.5 text-sm transition-all ${
-            allViewed ? 'text-petal hover:scale-105' : 'text-white/60 hover:text-white/90'
-          }`}
-        >
-          继续往下 <ChevronRight size={16} />
-        </button>
+      {/* 时间轴 + 底部继续 */}
+      <div className="sticky bottom-3 z-20 mx-auto mt-4 w-full max-w-md px-4">
+        <div className="glass rounded-2xl px-4 py-3">
+          <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/65">
+            <span>倒带 · {curLabel}</span>
+            <span>{visibleCount}/{photos.length}</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={months.length - 1}
+            value={timeIdx}
+            onChange={(e) => setTimeIdx(+e.target.value)}
+            className="w-full accent-[#f9b8d4]"
+            aria-label="时间轴"
+          />
+          <div className="mt-3 flex flex-col items-center gap-2">
+            <p className="text-xs text-white/50">
+              {allViewed ? '都翻过啦，准备好继续了吗' : `点照片翻看 · ${viewed}/${photos.length}`}
+            </p>
+            <button
+              onClick={() => onDone && onDone()}
+              className={`flex items-center gap-1 rounded-full glass px-6 py-2.5 text-sm transition-all ${
+                allViewed ? 'text-petal hover:scale-105' : 'text-white/60 hover:text-white/90'
+              }`}
+            >
+              继续往下 <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -137,36 +168,28 @@ export default function PhotoWall({ onDone }) {
  * 伪随机种子基于索引，结果稳定
  */
 function scatterLayout(count, vw) {
-  // 卡片宽度:手机 110px,宽屏 128px
-  const cardW = vw < 480 ? 110 : 128
-  const cardH = vw < 480 ? 165 : 200
-  // 每行张数:基于视口宽度自适应,保证不重叠
-  // 间距 = (vw - perRow*cardW) / (perRow+1),至少留 12px 间隙
-  let perRow = Math.max(2, Math.floor((vw - 24) / (cardW + 12)))
-  perRow = Math.min(perRow, 6) // 最多 6 列
+  const cardW = vw < 480 ? 104 : 128
+  const cardH = vw < 480 ? 156 : 200
+  // 两侧最小留白：保证卡片中心距边缘 ≥ cardW/2 + 8，避免溢出被裁
+  const halfPct = ((cardW / 2 + 8) / vw) * 100
+  let perRow = Math.max(2, Math.floor((vw - 16) / (cardW + 14)))
+  perRow = Math.min(perRow, 6)
   const rows = Math.ceil(count / perRow)
-  const rowH = cardH + 50 // 行间距留错落余量
+  const rowH = cardH + 56
   const positions = []
 
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / perRow)
     const col = i % perRow
-    // 基础 x:均匀分布到两侧留白
-    const padX = 12 // 两侧最小留白 %
-    const baseX = padX + (col / Math.max(1, perRow - 1)) * (100 - padX * 2)
-    // 基础 y:行间距 + 顶部标题留白
-    const baseY = 90 + row * rowH
-    // 稳定伪随机抖动
+    const denom = Math.max(1, perRow - 1)
+    const baseX = halfPct + (col / denom) * (100 - halfPct * 2)
+    const baseY = 96 + row * rowH
+    // 稳定伪随机抖动（仅 y 方向，x 保持网格不溢出）
     const seed = (i * 9301 + 49297) % 233280
-    const jx = ((seed / 233280) - 0.5) * 10 // x ±5%
-    const jy = (((seed * 7) % 233280) / 233280 - 0.5) * 50 // y ±25px
-
-    positions.push({
-      x: Math.max(6, Math.min(94, baseX + jx)),
-      y: baseY + jy,
-    })
+    const jy = (((seed * 7) % 233280) / 233280 - 0.5) * 28
+    positions.push({ x: baseX, y: baseY + jy })
   }
 
-  const height = rows * rowH + 120
+  const height = rows * rowH + 140
   return { positions, height, cardW }
 }

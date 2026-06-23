@@ -4,6 +4,7 @@ import { Package, Truck, MapPin, Check } from 'lucide-react'
 import { giftConfig } from '../data/gift.config'
 import GlassCard from './GlassCard'
 import TypewriterText from './TypewriterText'
+import RouteMap from './RouteMap'
 
 /**
  * 物流三段式进度 —— 已发货 / 运输中 / 已签收
@@ -11,7 +12,7 @@ import TypewriterText from './TypewriterText'
  */
 export default function TrackingProgress({ onComplete }) {
   const stages = giftConfig.stages
-  const [active, setActive] = useState(-1) // 当前正在播放的段
+  const [active, setActive] = useState(0) // 当前正在播放的段（0 = 已发货，从成都出发）
   const [done, setDone] = useState([])
   const rootRef = useRef(null)
   const lineRefs = useRef([])
@@ -89,6 +90,9 @@ export default function TrackingProgress({ onComplete }) {
       role="region"
       aria-label="物流追踪"
     >
+      <div className="mb-6">
+        <RouteMap active={active} />
+      </div>
       <div className="relative pl-2">
         {stages.map((s, i) => {
           const Icon = icons[i]

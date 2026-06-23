@@ -11,7 +11,7 @@ export const giftConfig = {
 
   // —— 生日日期（用于「已陪伴天数 / 倒计时」） ——
   //   设为今年生日；若今年生日已过，会自动显示「已度过 N 天」
-  birthday: '2026-06-23',
+  birthday: '2026-06-24',
 
   // —— 背景音乐：把你的 mp3 命名为 bgm.mp3 放进 public/ 即可 ——
   bgm: './bgm.mp3',
@@ -56,6 +56,9 @@ export const giftConfig = {
 
   // —— 拆包裹提示 ——
   unwrapHint: '点击包裹，拆开你的 19 岁',
+
+  // —— 照片墙标题 ——
+  photoWallTitle: '她的一年',
 
   // —— 祝福页打字机 ——
   wishLines: [

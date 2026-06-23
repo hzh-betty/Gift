@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { Music, Music2, Loader2 } from 'lucide-react'
+import { Music, Music2, Loader2, Lock } from 'lucide-react'
 import { giftConfig } from './data/gift.config'
 import { useAudio } from './hooks/useAudio'
 import ParticleBackground from './components/ParticleBackground'
@@ -20,6 +20,13 @@ export default function App() {
   const [trackingDone, setTrackingDone] = useState(false)
   const stageRef = useRef(null)
   const { playing, toggle, unlock } = useAudio(giftConfig.bgm)
+
+  // 已到达的最远幕：锁定右侧指示器，未解锁的幕不剧透、不可跳
+  const [maxAct, setMaxAct] = useState(0)
+  useEffect(() => setMaxAct((m) => Math.max(m, ACTS.indexOf(act))), [act])
+  const jump = useCallback((a) => {
+    if (ACTS.indexOf(a) <= maxAct) setAct(a)
+  }, [maxAct])
 
   // 移动端音乐：首次任意手势解锁（但跳过音乐按钮自身的点击，避免与 toggle 冲突）
   useEffect(() => {
@@ -88,7 +95,7 @@ export default function App() {
       </section>
 
       {/* 进度指示器 */}
-      <ActIndicator act={moodIndex} onJump={setAct} />
+      <ActIndicator act={moodIndex} max={maxAct} onJump={jump} />
 
       {/* 爱心上飘层（仅祝福页启用） */}
       {act === 'wishes' && <HeartBurst />}
@@ -144,23 +151,31 @@ function Tracking({ onComplete }) {
 }
 
 /* —— 幕指示器 —— */
-function ActIndicator({ act, onJump }) {
+function ActIndicator({ act, max, onJump }) {
   const labels = ['启程', '在路上', '到达', '回忆', '祝福']
   const acts = ['intro', 'tracking', 'unwrap', 'photos', 'wishes']
   return (
     <nav className="fixed right-4 top-1/2 z-40 flex -translate-y-1/2 flex-col items-center gap-2.5 rounded-2xl glass px-3 py-4 safe-pt">
-      {labels.map((l, i) => (
-        <button
-          onClick={() => onJump && onJump(acts[i])}
-          key={i}
-          aria-label={l}
-          className={`cursor-pointer whitespace-nowrap text-[11px] leading-relaxed transition-all hover:text-white/80 ${
-            i === act ? 'font-semibold text-petal' : 'text-white/45'
-          }`}
-        >
-          {l}
-        </button>
-      ))}
+      {labels.map((l, i) => {
+        const locked = i > max
+        return (
+          <button
+            key={i}
+            onClick={locked ? undefined : () => onJump && onJump(acts[i])}
+            disabled={locked}
+            aria-label={locked ? '未解锁' : l}
+            className={`whitespace-nowrap text-[11px] leading-relaxed transition-all ${
+              locked
+                ? 'text-white/20'
+                : i === act
+                ? 'cursor-pointer font-semibold text-petal'
+                : 'cursor-pointer text-white/45 hover:text-white/80'
+            }`}
+          >
+            {locked ? <Lock size={11} /> : l}
+          </button>
+        )
+      })}
     </nav>
   )
 }

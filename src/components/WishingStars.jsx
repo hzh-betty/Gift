@@ -15,6 +15,8 @@ export default function WishingStars() {
   const spawn = useCallback(() => {
     const layer = layerRef.current
     if (!layer) return
+    // 限制同时存在的流星数,防止不可见时堆积
+    if (layer.children.length >= 4) return
     const star = document.createElement('button')
     const y = Math.random() * window.innerHeight * 0.42 + 40
     star.style.cssText =
@@ -40,9 +42,27 @@ export default function WishingStars() {
   }, [wishes])
 
   useEffect(() => {
-    const id = setInterval(spawn, 3500)
+    let id = setInterval(spawn, 3500)
     spawn()
-    return () => { clearInterval(id); clearTimeout(toastTimer.current) }
+    // 页面不可见时暂停生成,可见时恢复,防止流星堆积
+    const onVis = () => {
+      clearInterval(id)
+      if (!document.hidden) {
+        id = setInterval(spawn, 3500)
+      }
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      clearInterval(id)
+      clearTimeout(toastTimer.current)
+      document.removeEventListener('visibilitychange', onVis)
+      // 卸载时清空所有残留流星
+      const layer = layerRef.current
+      if (layer) {
+        gsap.killTweensOf(layer.children)
+        layer.innerHTML = ''
+      }
+    }
   }, [spawn])
 
   return (

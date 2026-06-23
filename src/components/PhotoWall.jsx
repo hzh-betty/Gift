@@ -62,9 +62,9 @@ export default function PhotoWall({ onDone }) {
               aria-label={`照片 ${i + 1}`}
               className="absolute z-10 cursor-pointer"
               style={{
-                left: `${pos.x}px`,
+                left: `${pos.x}%`,
                 top: `${pos.y}px`,
-                transform: `rotate(${p.rot || 0}deg)`,
+                transform: `translateX(-50%) rotate(${p.rot || 0}deg)`,
               }}
             >
               <div className="relative" style={{ perspective: '1000px' }}>
@@ -130,39 +130,32 @@ export default function PhotoWall({ onDone }) {
  * 伪随机种子基于索引，结果稳定
  */
 function scatterLayout(count) {
-  // 假设容器宽度 ~380px(max-w-lg 实际渲染),卡片宽 128+padding ~140px
-  const W = 380
-  const cardW = 140
-  const cardH = 190 // 128 * 4/3 + caption + padding
-  const minGap = 8 // 卡片间最小间隙
-  const margin = 10
-  // 行数:每行约 3 张(380 / (140+8) ≈ 2.5,取 3 张交错)
-  const perRow = 3
+  const cardH = 200 // 卡片高度(含 caption)
+  const rowH = cardH + 40 // 行间距留错落余量
+  // 每行张数:桌面宽屏多放,窄屏少放。用列数自适应
+  // 这里用百分比定位,x 方向均匀分布到 5%~95%
+  const perRow = 5
   const rows = Math.ceil(count / perRow)
-  const rowH = cardH + minGap + 20 // 行高留余量给错落
   const positions = []
-  const placed = [] // {x, y} 已放置的中心点
 
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / perRow)
-    // 基础网格位置(中心)
-    const baseX = margin + (i % perRow) * (cardW + minGap) + cardW / 2
-    const baseY = margin + row * rowH + cardH / 2
-    // 稳定伪随机
+    const col = i % perRow
+    // 基础 x:均匀分布到 10%~90%
+    const baseX = 10 + (col / (perRow - 1)) * 80
+    // 基础 y:行间距 + 顶部标题留白
+    const baseY = 80 + row * rowH
+    // 稳定伪随机抖动
     const seed = (i * 9301 + 49297) % 233280
-    const rnd = (s) => ((s % 233280) / 233280 - 0.5)
-    const jx = rnd(seed) * 30 // x 抖动 ±15
-    const jy = rnd(seed * 7) * 40 // y 抖动 ±20
+    const jx = ((seed / 233280) - 0.5) * 14 // x ±7%
+    const jy = (((seed * 7) % 233280) / 233280 - 0.5) * 50 // y ±25px
 
-    let x = baseX + jx
-    let y = baseY + jy
-    // 边界
-    x = Math.max(margin + cardW / 2, Math.min(W - margin - cardW / 2, x))
-    y = Math.max(margin + cardH / 2, y)
-
-    positions.push({ x: x - cardW / 2, y: y - cardH / 2 })
+    positions.push({
+      x: Math.max(5, Math.min(95, baseX + jx)),
+      y: baseY + jy,
+    })
   }
 
-  const height = rows * rowH + margin
-  return { positions, height, width: W }
+  const height = rows * rowH + 120
+  return { positions, height }
 }

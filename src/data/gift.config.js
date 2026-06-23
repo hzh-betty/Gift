@@ -90,22 +90,6 @@ export const giftConfig = {
     '愿你年年岁岁，都有人惦记。',
   ],
 
-  // —— 星座连线：按顺序连星成心形，揭晓秘密 ——
-  constellation: {
-    hint: '按顺序连接星辰，解开一个秘密',
-    reveal: '你就是我宇宙里，最亮的那颗星',
-    stars: [
-      { x: 50, y: 30 },
-      { x: 30, y: 18 },
-      { x: 18, y: 35 },
-      { x: 30, y: 55 },
-      { x: 50, y: 82 },
-      { x: 70, y: 55 },
-      { x: 82, y: 35 },
-      { x: 70, y: 18 },
-    ],
-  },
-
 }
 
 export default giftConfig

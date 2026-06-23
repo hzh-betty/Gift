@@ -6,7 +6,6 @@ import GlassCard from './GlassCard'
 import TypewriterText from './TypewriterText'
 import CandleCake from './CandleCake'
 import Signature from './Signature'
-import Constellation from './Constellation'
 import WishingStars from './WishingStars'
 
 /**
@@ -132,13 +131,7 @@ export default function BirthdayWishes() {
         </p>
       )}
 
-      {/* 星座连线 + 流星许愿（吹完蜡烛解锁） */}
-      {candlesOut && (
-        <GlassCard className="mt-6 w-full p-6" glow="rgba(255,210,122,0.3)">
-          <p className="text-center text-xs tracking-[0.3em] text-white/55">CONSTELLATION</p>
-          <Constellation />
-        </GlassCard>
-      )}
+      {/* 流星许愿（吹完蜡烛解锁） */}
       {candlesOut && <WishingStars />}
     </div>
   )

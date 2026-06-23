@@ -85,7 +85,7 @@ export default function App() {
         ref={stageRef}
         key={act}
         className={`relative z-10 flex min-h-screen w-full flex-col items-center safe-pt safe-pb ${
-          act === 'photos' || act === 'tracking' ? 'justify-start pt-20 pb-10 overflow-y-auto' : 'justify-center pt-20 pb-10'
+          act === 'photos' ? 'justify-start pt-20 pb-10 overflow-y-auto' : 'justify-center pt-20 pb-10'
         }`}
       >
         {act === 'intro' && <Intro onDone={goTracking} />}

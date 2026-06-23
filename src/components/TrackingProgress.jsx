@@ -81,7 +81,9 @@ export default function TrackingProgress({ onComplete }) {
     }
   }, [stages])
 
-  const icons = [Package, Truck, MapPin]
+  const icons = stages.map((_, i) =>
+    i === 0 ? Package : i === stages.length - 1 ? MapPin : Truck
+  )
 
   return (
     <div

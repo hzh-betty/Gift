@@ -2,25 +2,43 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { giftConfig } from '../data/gift.config'
 
-// 城市在 SVG 上的坐标（按真实经纬度相对位置：成都在西南，南京·南通在长三角）
-const COORDS = {
-  shipped: { x: 54, y: 176 },
-  transit: { x: 262, y: 110 },
-  arrived: { x: 296, y: 116 },
+// 城市经纬度，按真实位置映射到 SVG 坐标
+const LNG_LAT = {
+  '成都': [104.07, 30.67],
+  '重庆': [106.55, 29.56],
+  '武汉': [114.31, 30.59],
+  '合肥': [117.27, 31.86],
+  '南京': [118.80, 32.06],
+  '南通': [120.86, 32.01],
 }
-// 折线路径上各城市进度：成都=0，南通=1，南京≈两段接点
-const T = { shipped: 0, transit: 0.88, arrived: 1 }
+const cityName = (s) => s.city.split('·').pop().trim()
+
+const PAD = 38
+const W = 360
+const H = 250
+const LNG = [103.5, 121.5]
+const LAT = [29.0, 32.6]
+const project = (lng, lat) => ({
+  x: PAD + ((lng - LNG[0]) / (LNG[1] - LNG[0])) * (W - PAD * 2),
+  // 纬度上小下大，SVG y 轴下大，取反
+  y: PAD + ((LAT[1] - lat) / (LAT[1] - LAT[0])) * (H - PAD * 2),
+})
 
 /**
- * 极简物流地图：三个城市按真实相对位置落点，虚线连接，
+ * 物流地图：城市按真实经纬度落点，虚线连接，
  * 一个光点沿路径移动，随 active 段推进到达对应城市。
- * @param {number} active 当前物流段（0/1/2，≥length 视为已送达）
+ * 段数不限，坐标与进度自动计算。
+ * @param {number} active 当前物流段索引
  */
 export default function RouteMap({ active }) {
   const pathRef = useRef(null)
   const dotRef = useRef(null)
   const stages = giftConfig.stages
-  const pts = stages.map((s) => COORDS[s.key]).filter(Boolean)
+
+  const pts = stages.map((s) => {
+    const c = LNG_LAT[cityName(s)]
+    return c ? project(c[0], c[1]) : null
+  }).filter(Boolean)
   const d =
     pts.length >= 2
       ? `M ${pts[0].x} ${pts[0].y} ` + pts.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ')
@@ -32,8 +50,9 @@ export default function RouteMap({ active }) {
     const dot = dotRef.current
     if (!path || !dot) return
     const total = path.getTotalLength()
+    // 进度按段数均分：第 i 段 -> i/(n-1)
     const idx = Math.min(Math.max(active, 0), stages.length - 1)
-    const target = T[stages[idx]?.key] ?? 0
+    const target = stages.length > 1 ? idx / (stages.length - 1) : 0
     const obj = { p: dot.dataset.p != null ? +dot.dataset.p : 0 }
     gsap.to(obj, {
       p: target,
@@ -74,10 +93,12 @@ export default function RouteMap({ active }) {
 
       {/* 城市节点 */}
       {stages.map((s, i) => {
-        const c = COORDS[s.key]
+        const c = pts[i]
         if (!c) return null
         const on = i <= active
-        const name = s.city.split('·').pop().trim()
+        const name = cityName(s)
+        // 相邻城市文字上下交替，避免重叠
+        const labelAbove = i % 2 === 0
         return (
           <g key={s.key} opacity={on ? 1 : 0.35}>
             {on && <circle cx={c.x} cy={c.y} r="13" fill={s.accent} opacity="0.25" />}
@@ -89,10 +110,10 @@ export default function RouteMap({ active }) {
               stroke="#fff"
               strokeWidth="1.5"
             />
-            <text x={c.x} y={c.y - 15} textAnchor="middle" fill="#fff" fontSize="13" fontWeight="600">
+            <text x={c.x} y={c.y + (labelAbove ? -15 : -4)} textAnchor="middle" fill="#fff" fontSize="12" fontWeight="600">
               {name}
             </text>
-            <text x={c.x} y={c.y + 22} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9">
+            <text x={c.x} y={c.y + (labelAbove ? 22 : 14)} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9">
               {s.status}
             </text>
           </g>

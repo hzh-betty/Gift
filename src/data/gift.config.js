@@ -23,7 +23,7 @@ export const giftConfig = {
   ],
 
   // —— 物流三段式 ——
-  //   status: 'shipped' 已发货 / 'transit' 到达中转 / 'arrived' 已签收
+  //   物流多段式：已发货 → 中转×N → 已签收，段数不限
   stages: [
     {
       key: 'shipped',
@@ -35,13 +35,40 @@ export const giftConfig = {
       accent: '#a8c8ff',
     },
     {
-      key: 'transit',
+      key: 't1',
+      status: '运输中',
+      city: '重庆',
+      time: '上午 09:40',
+      title: '翻过群山，到了山城',
+      desc: '包裹在雾都的轻轨间穿梭，江风替我捎了一句「想见你」。',
+      accent: '#b8d4ff',
+    },
+    {
+      key: 't2',
+      status: '运输中',
+      city: '湖北·武汉',
+      time: '午后 13:25',
+      title: '路过江城，热干面很香',
+      desc: '它在长江大桥上停了停，看了一会儿轮渡，又继续往东赶路。',
+      accent: '#c4c8ff',
+    },
+    {
+      key: 't3',
+      status: '运输中',
+      city: '安徽·合肥',
+      time: '傍晚 17:50',
+      title: '到了庐州，天色渐暗',
+      desc: '黄昏的巢湖边亮起灯，它知道，离你只剩最后两段路了。',
+      accent: '#c8b6ff',
+    },
+    {
+      key: 't4',
       status: '运输中',
       city: '江苏·南京',
-      time: '午后 14:48',
+      time: '夜 21:18',
       title: '路过金陵，又近了一点',
-      desc: '它在中转站短暂停留，被星河温柔托付给下一程，离你只剩最后一段路。',
-      accent: '#c8b6ff',
+      desc: '它在中转站短暂停留，被星河温柔托付给最后一程。',
+      accent: '#d4b8ff',
     },
     {
       key: 'arrived',

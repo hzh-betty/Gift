@@ -14,8 +14,14 @@ export default function PhotoWall({ onDone }) {
   const [flipped, setFlipped] = useState(() => photos.map(() => false))
   const [viewed, setViewed] = useState(0)
 
-  // 预计算散落位置（稳定，不随重渲染变）
-  const layout = useMemo(() => scatterLayout(photos.length), [photos.length])
+  // 视口宽度,resize 时重算布局
+  const [vw, setVw] = useState(typeof window !== 'undefined' ? window.innerWidth : 375)
+  useEffect(() => {
+    const onResize = () => setVw(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  const layout = useMemo(() => scatterLayout(photos.length, vw), [photos.length, vw])
 
   useEffect(() => {
     cardRefs.current.filter(Boolean).forEach((c, i) => {
@@ -70,8 +76,9 @@ export default function PhotoWall({ onDone }) {
               <div className="relative" style={{ perspective: '1000px' }}>
                 {/* 正面 */}
                 <div
-                  className="relative w-32 rounded-sm bg-white p-2 pb-7 shadow-xl transition-transform duration-500"
+                  className="relative rounded-sm bg-white p-2 pb-7 shadow-xl transition-transform duration-500"
                   style={{
+                    width: `${layout.cardW}px`,
                     transformStyle: 'preserve-3d',
                     transform: flipped[i] ? 'rotateY(180deg)' : 'none',
                     backfaceVisibility: 'hidden',
@@ -129,33 +136,37 @@ export default function PhotoWall({ onDone }) {
  * 在容器宽度内随机放置每张照片，保证最小间距不重叠
  * 伪随机种子基于索引，结果稳定
  */
-function scatterLayout(count) {
-  const cardH = 200 // 卡片高度(含 caption)
-  const rowH = cardH + 40 // 行间距留错落余量
-  // 每行张数:桌面宽屏多放,窄屏少放。用列数自适应
-  // 这里用百分比定位,x 方向均匀分布到 5%~95%
-  const perRow = 5
+function scatterLayout(count, vw) {
+  // 卡片宽度:手机 110px,宽屏 128px
+  const cardW = vw < 480 ? 110 : 128
+  const cardH = vw < 480 ? 165 : 200
+  // 每行张数:基于视口宽度自适应,保证不重叠
+  // 间距 = (vw - perRow*cardW) / (perRow+1),至少留 12px 间隙
+  let perRow = Math.max(2, Math.floor((vw - 24) / (cardW + 12)))
+  perRow = Math.min(perRow, 6) // 最多 6 列
   const rows = Math.ceil(count / perRow)
+  const rowH = cardH + 50 // 行间距留错落余量
   const positions = []
 
   for (let i = 0; i < count; i++) {
     const row = Math.floor(i / perRow)
     const col = i % perRow
-    // 基础 x:均匀分布到 10%~90%
-    const baseX = 10 + (col / (perRow - 1)) * 80
+    // 基础 x:均匀分布到两侧留白
+    const padX = 12 // 两侧最小留白 %
+    const baseX = padX + (col / Math.max(1, perRow - 1)) * (100 - padX * 2)
     // 基础 y:行间距 + 顶部标题留白
-    const baseY = 80 + row * rowH
+    const baseY = 90 + row * rowH
     // 稳定伪随机抖动
     const seed = (i * 9301 + 49297) % 233280
-    const jx = ((seed / 233280) - 0.5) * 14 // x ±7%
+    const jx = ((seed / 233280) - 0.5) * 10 // x ±5%
     const jy = (((seed * 7) % 233280) / 233280 - 0.5) * 50 // y ±25px
 
     positions.push({
-      x: Math.max(5, Math.min(95, baseX + jx)),
+      x: Math.max(6, Math.min(94, baseX + jx)),
       y: baseY + jy,
     })
   }
 
   const height = rows * rowH + 120
-  return { positions, height }
+  return { positions, height, cardW }
 }

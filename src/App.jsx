@@ -76,7 +76,9 @@ export default function App() {
       <section
         ref={stageRef}
         key={act}
-        className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center pt-20 pb-10 safe-pt safe-pb"
+        className={`relative z-10 flex min-h-screen w-full flex-col items-center safe-pt safe-pb ${
+          act === 'photos' ? 'justify-start pt-20 pb-10 overflow-y-auto' : 'justify-center pt-20 pb-10'
+        }`}
       >
         {act === 'intro' && <Intro onDone={goTracking} />}
         {act === 'tracking' && <Tracking onComplete={goUnwrap} />}

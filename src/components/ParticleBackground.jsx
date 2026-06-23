@@ -156,13 +156,17 @@ export default function ParticleBackground({ mood = 'intro' }) {
         if (f.y < -10) f.y = h + 10
         if (f.y > h + 10) f.y = -10
         const glow = (Math.sin(t * f.tw + f.phase) + 1) / 2
+        // 径向渐变模拟光晕，替代昂贵的 shadowBlur（逐点 shadow 是 Canvas 最贵操作）
+        const core = f.r * (0.6 + glow * 0.8)
+        const halo = core * 4
+        const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, halo)
+        g.addColorStop(0, `rgba(255,234,150,${0.35 + glow * 0.55})`)
+        g.addColorStop(0.35, `rgba(255,210,120,${0.15 + glow * 0.3})`)
+        g.addColorStop(1, 'rgba(255,210,120,0)')
+        ctx.fillStyle = g
         ctx.beginPath()
-        ctx.arc(f.x, f.y, f.r * (0.6 + glow * 0.8), 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,224,102,${0.2 + glow * 0.6})`
-        ctx.shadowColor = 'rgba(255,210,120,0.9)'
-        ctx.shadowBlur = 8 + glow * 8
+        ctx.arc(f.x, f.y, halo, 0, Math.PI * 2)
         ctx.fill()
-        ctx.shadowBlur = 0
       }
     }
 
@@ -189,7 +193,7 @@ export default function ParticleBackground({ mood = 'intro' }) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10 h-full w-full"
-      style={{ width: '100vw', height: '100vh' }}
+      style={{ width: '100vw', height: '100dvh' }}
       aria-hidden="true"
     />
   )

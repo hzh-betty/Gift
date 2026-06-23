@@ -20,7 +20,6 @@ body,
   height: 100%;
   width: 100%;
   min-height: 100%;
-  overflow-x: hidden;
 }
 
 body {
@@ -32,6 +31,7 @@ body {
   background: #0b1437;
   overscroll-behavior: none;
   touch-action: manipulation;
+  overflow-x: hidden;
 }
 
 @layer components {

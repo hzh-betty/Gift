@@ -45,7 +45,11 @@ export default function App() {
     gsap.fromTo(
       stageRef.current,
       { opacity: 0, y: 24, scale: 0.98 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out' }
+      {
+        opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'power3.out',
+        // 清除残留 transform，避免层叠上下文困住毛玻璃的 backdrop 采样（Safari）
+        onComplete: () => gsap.set(stageRef.current, { clearProps: 'transform' }),
+      }
     )
   }, [act])
 
@@ -66,7 +70,7 @@ export default function App() {
   const moodIndex = ACTS.indexOf(act)
 
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden text-white">
+    <main className="relative min-h-dvh w-full overflow-x-hidden text-white">
       <ParticleBackground mood={act} />
 
       {/* 顶部音乐开关 */}
@@ -84,7 +88,7 @@ export default function App() {
       <section
         ref={stageRef}
         key={act}
-        className={`relative z-10 flex min-h-screen w-full flex-col items-center safe-pt safe-pb ${
+        className={`relative z-10 flex min-h-dvh w-full flex-col items-center safe-pt safe-pb ${
           act === 'photos' ? 'justify-start pt-20 pb-10 overflow-y-auto' : 'justify-center pt-20 pb-10'
         }`}
       >

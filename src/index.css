@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
+    'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #fff;
+  background: #0b1437;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+@layer components {
+  /* 毛玻璃卡片基类 */
+  .glass {
+    @apply bg-white/15 backdrop-blur-2xl border border-white/25 shadow-glass;
+  }
+  .glass-strong {
+    @apply bg-white/25 backdrop-blur-2xl border border-white/40 shadow-glass;
+  }
+
+  /* 渐变文字 */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(120deg, #ffffff 0%, #ffd6e8 55%, #c8d6ff 100%);
+  }
+  .text-gradient-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(120deg, #fff5e0 0%, #ffd27a 50%, #ffd6e8 100%);
+  }
+
+  /* 闪烁下划线光带 */
+  .shimmer-text {
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 214, 232, 1) 50%,
+      rgba(255, 255, 255, 0.55) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    @apply animate-shimmer;
+  }
+}
+
+@layer utilities {
+  .safe-pt {
+    padding-top: var(--safe-top);
+  }
+  .safe-pb {
+    padding-bottom: var(--safe-bottom);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* 打字机光标 */
+.tw-cursor::after {
+  content: '|';
+  margin-left: 2px;
+  animation: blink 0.9s steps(1) infinite;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 200;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

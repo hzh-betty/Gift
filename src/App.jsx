@@ -146,19 +146,19 @@ function ActIndicator({ act, onJump }) {
   const labels = ['启程', '在路上', '到达', '回忆', '祝福']
   const acts = ['intro', 'tracking', 'unwrap', 'photos', 'wishes']
   return (
-    <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full glass px-3 py-1.5 safe-pb">
+    <nav className="fixed right-4 top-1/2 z-40 flex -translate-y-1/2 flex-col items-center gap-3 rounded-full glass px-2 py-3 safe-pt">
       {labels.map((l, i) => (
         <button
           onClick={() => onJump && onJump(acts[i])}
           key={i}
-          className={`cursor-pointer text-[10px] transition-all hover:text-white/80 ${
+          aria-label={l}
+          className={`cursor-pointer writing-vertical text-[11px] transition-all hover:text-white/80 ${
             i === act ? 'font-semibold text-petal' : 'text-white/45'
           }`}
         >
           {l}
-          {i < labels.length - 1 && <span className="ml-2 text-white/20">›</span>}
         </button>
       ))}
-    </div>
+    </nav>
   )
 }

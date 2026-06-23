@@ -83,6 +83,11 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: 0.15em;
+  }
 }
 
 /* 打字机光标 */

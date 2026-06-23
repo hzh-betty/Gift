@@ -83,7 +83,7 @@ export default function BirthdayWishes() {
   return (
     <div
       ref={rootRef}
-      className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center px-5 pt-12 pb-28 safe-pt safe-pb"
+      className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center px-5 pt-12 pb-16 safe-pt safe-pb"
     >
       {/* 标题 */}
       <div className="text-center">

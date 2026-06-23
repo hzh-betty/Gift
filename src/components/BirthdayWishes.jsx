@@ -5,6 +5,9 @@ import { useCountdown } from '../hooks/useCountdown'
 import GlassCard from './GlassCard'
 import TypewriterText from './TypewriterText'
 import CandleCake from './CandleCake'
+import Signature from './Signature'
+import Constellation from './Constellation'
+import WishingStars from './WishingStars'
 
 /**
  * 祝福页 —— 蛋糕 + 蜡烛 + 打字机祝福 + 已陪伴天数 + 落款
@@ -117,16 +120,26 @@ export default function BirthdayWishes() {
             showSign ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
           }`}
         >
-          <p className="font-serif italic text-white/85">{giftConfig.signoff}</p>
+          <Signature play={showSign} />
+          <p className="mt-1 font-serif italic text-white/85">{giftConfig.signoff}</p>
         </div>
       </GlassCard>
 
       {/* 彩蛋提示 */}
       {candlesOut && (
         <p className="mt-6 animate-floaty text-center text-xs text-white/55">
-          点点屏幕任意处，让心愿飞起来 ✦
+          点点屏幕任意处，让心愿飞起来 · 流星划过时点一下许愿 ✦
         </p>
       )}
+
+      {/* 星座连线 + 流星许愿（吹完蜡烛解锁） */}
+      {candlesOut && (
+        <GlassCard className="mt-6 w-full p-6" glow="rgba(255,210,122,0.3)">
+          <p className="text-center text-xs tracking-[0.3em] text-white/55">CONSTELLATION</p>
+          <Constellation />
+        </GlassCard>
+      )}
+      {candlesOut && <WishingStars />}
     </div>
   )
 }

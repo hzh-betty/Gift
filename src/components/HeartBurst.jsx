@@ -40,10 +40,19 @@ export default function HeartBurst() {
 
   useEffect(() => {
     window.__heartBurst = spawnAt
+    const ripple = (x, y) => {
+      const layer = layerRef.current
+      if (!layer) return
+      const r = document.createElement('span')
+      r.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;border:1.5px solid rgba(255,214,232,0.7);pointer-events:none;`
+      layer.appendChild(r)
+      gsap.to(r, { scale: 12, opacity: 0, duration: 0.9, ease: 'power2.out', onComplete: () => r.remove() })
+    }
     const onDown = (e) => {
       const x = e.clientX
       const y = e.clientY
       if (x == null) return
+      ripple(x, y)
       spawnAt(x, y, 5)
     }
     window.addEventListener('pointerdown', onDown)

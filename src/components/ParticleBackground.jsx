@@ -29,6 +29,7 @@ export default function ParticleBackground({ mood = 'intro' }) {
     // —— 数据 ——
     let stars = []
     let bokehs = []
+    let fireflies = []
     let shootingStar = null
     let lastShoot = 0
 
@@ -58,6 +59,18 @@ export default function ParticleBackground({ mood = 'intro' }) {
         hue: Math.random() < 0.5 ? cfg.tintA : cfg.tintB,
         a: Math.random() * 0.3 + 0.12,
       }))
+      // 萤火虫（仅 wishes 幕）：暖黄绿，缓慢漂移 + 明灭
+      fireflies = mood === 'wishes'
+        ? Array.from({ length: 26 }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            r: Math.random() * 1.6 + 0.8,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            phase: Math.random() * Math.PI * 2,
+            tw: Math.random() * 0.04 + 0.01,
+          }))
+        : []
     }
 
     const drawBg = () => {
@@ -134,9 +147,29 @@ export default function ParticleBackground({ mood = 'intro' }) {
       }
     }
 
+    const drawFireflies = (t) => {
+      for (const f of fireflies) {
+        f.x += f.vx
+        f.y += f.vy
+        if (f.x < -10) f.x = w + 10
+        if (f.x > w + 10) f.x = -10
+        if (f.y < -10) f.y = h + 10
+        if (f.y > h + 10) f.y = -10
+        const glow = (Math.sin(t * f.tw + f.phase) + 1) / 2
+        ctx.beginPath()
+        ctx.arc(f.x, f.y, f.r * (0.6 + glow * 0.8), 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,224,102,${0.2 + glow * 0.6})`
+        ctx.shadowColor = 'rgba(255,210,120,0.9)'
+        ctx.shadowBlur = 8 + glow * 8
+        ctx.fill()
+        ctx.shadowBlur = 0
+      }
+    }
+
     const loop = (t) => {
       drawBg()
-      drawBokeh()
+      if (fireflies.length) drawFireflies(t)
+      else drawBokeh()
       drawStars(t)
       maybeShoot(t)
       raf = requestAnimationFrame(loop)

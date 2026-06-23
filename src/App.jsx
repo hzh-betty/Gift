@@ -74,7 +74,8 @@ export default function App() {
         data-music-btn
         onClick={toggle}
         aria-label={playing ? '关闭音乐' : '开启音乐'}
-        className="fixed right-4 top-4 z-40 grid h-10 w-10 place-items-center rounded-full glass text-white active:scale-90 safe-pt"
+        className="fixed right-4 z-40 grid h-10 w-10 place-items-center rounded-full glass text-white active:scale-90"
+        style={{ top: 'calc(1rem + env(safe-area-inset-top))' }}
       >
         {playing ? <Music size={18} /> : <Music2 size={18} className="opacity-70" />}
       </button>

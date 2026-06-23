@@ -60,51 +60,58 @@ export default function PhotoWall({ onDone }) {
         <p className="mt-2 text-xs text-white/50">点一下照片，翻到背面看看</p>
       </div>
 
-      {/* 散落照片 */}
-      <div className="relative flex w-full flex-wrap justify-center gap-4">
+      {/* 散落照片：多列瀑布流 + 交替偏移与旋转 */}
+      <div className="columns-2 gap-3 sm:columns-3">
         {photos.map((p, i) => (
           <button
             key={i}
             ref={(el) => (cardRefs.current[i] = el)}
             onClick={() => flip(i)}
             aria-label={`照片 ${i + 1}`}
-            className="group relative h-44 w-32 shrink-0 cursor-pointer"
-            style={{ perspective: '1000px' }}
+            className="group relative mb-4 block w-full break-inside-avoid cursor-pointer"
+            style={{
+              perspective: '1000px',
+              transform: `rotate(${p.rot || 0}deg)`,
+              marginLeft: i % 2 === 0 ? '0' : '12px',
+            }}
           >
-            {/* 正面：照片 */}
-            <div
-              className="absolute inset-0 rounded-sm bg-white p-2 pb-8 shadow-xl transition-transform duration-500"
-              style={{
-                transformStyle: 'preserve-3d',
-                transform: flipped[i] ? 'rotateY(180deg)' : 'none',
-              }}
-            >
-              <div className="h-full w-full overflow-hidden bg-gray-200">
-                <img
-                  src={p.src}
-                  alt={p.caption || `照片 ${i + 1}`}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                  draggable="false"
-                />
+            <div className="relative w-full" style={{ perspective: '1000px' }}>
+              {/* 正面：照片 */}
+              <div
+                className="relative w-full rounded-sm bg-white p-2 pb-7 shadow-xl transition-transform duration-500"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: flipped[i] ? 'rotateY(180deg)' : 'none',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                <div className="aspect-[3/4] w-full overflow-hidden bg-gray-200">
+                  <img
+                    src={p.src}
+                    alt={p.caption || `照片 ${i + 1}`}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                {p.caption && (
+                  <p className="mt-1 text-center text-[10px] text-gray-700">{p.caption}</p>
+                )}
               </div>
-              {p.caption && (
-                <p className="mt-1 text-center text-[10px] text-gray-700">{p.caption}</p>
-              )}
-            </div>
-            {/* 背面：文字 */}
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center rounded-sm bg-gradient-to-br from-blossom/90 to-skyblue/90 p-3 text-center shadow-xl transition-transform duration-500"
-              style={{
-                transformStyle: 'preserve-3d',
-                transform: flipped[i] ? 'none' : 'rotateY(180deg)',
-                backfaceVisibility: 'hidden',
-              }}
-            >
-              <p className="font-serif text-[11px] leading-relaxed text-white/95">{p.note}</p>
-              {p.date && (
-                <p className="mt-2 text-[9px] tracking-wider text-white/70">{p.date}</p>
-              )}
+              {/* 背面：文字 */}
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center rounded-sm bg-gradient-to-br from-blossom/90 to-skyblue/90 p-3 text-center shadow-xl transition-transform duration-500"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: flipped[i] ? 'none' : 'rotateY(180deg)',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                <p className="font-serif text-[11px] leading-relaxed text-white/95">{p.note}</p>
+                {p.date && (
+                  <p className="mt-2 text-[9px] tracking-wider text-white/70">{p.date}</p>
+                )}
+              </div>
             </div>
           </button>
         ))}

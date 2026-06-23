@@ -73,12 +73,34 @@ export const giftConfig = {
   // —— 落款 ——
   signoff: '—— 来自 hzh，寄给你的整个夏天',
 
-  // —— 照片墙：把照片放进 public/photos/，在这里登记 ——
-  //   src 用相对路径，caption 正面标题，note 翻转背面的话，date 日期
+  // —— 照片墙：散落 Polaroid，按时间从早到晚排列 ——
   photos: [
-    { src: './photos/1.jpg', caption: '我们的开始', note: '那天阳光很好，你笑得像整片海都亮了。', date: '2024 · 春', rot: -6 },
-    { src: './photos/2.jpg', caption: '一起走过的路', note: '你说想去看海，我就想带你走遍所有海岸线。', date: '2024 · 夏', rot: 4 },
-    { src: './photos/3.jpg', caption: '平凡的一天', note: '其实什么都不做也很开心，因为是你。', date: '2024 · 秋', rot: -3 },
+    { src: './photos/1.jpg',  caption: '看徐良演唱会', note: '那天阳光很好，你笑得像整片海都亮了。', date: '2025-05-23 · 夏', rot: -7 },
+    { src: './photos/4.jpg',  caption: '大学军训',     note: '脱离高中苦海进入大学，感觉你活泼了许多。', date: '2025-09-15 · 秋', rot: 5 },
+    { src: './photos/5.jpg',  caption: '国庆旅游',     note: '希望你能愉快地度过这个假期。', date: '2025-10-01 · 秋', rot: -4 },
+    { src: './photos/6.jpg',  caption: '常州音乐节',   note: '现场的音乐太棒了，所有人都沉浸在旋律里。', date: '2025-10-02 · 秋', rot: 6 },
+    { src: './photos/7.jpg',  caption: '大学悠闲时光', note: '你总是那么轻松自在。', date: '2025-10-14 · 秋', rot: -8 },
+    { src: './photos/8.jpg',  caption: '泡面',         note: '大学吃泡面可真香！', date: '2025-10-30 · 秋', rot: 3 },
+    { src: './photos/9.jpg',  caption: '煎饼',         note: '在南通成功吃到连云港煎饼！', date: '2025-11-03 · 秋', rot: -5 },
+    { src: './photos/10.jpg', caption: '高雅人士',     note: '今天的我们也是高雅人士呢。', date: '2025-11-07 · 秋', rot: 7 },
+    { src: './photos/11.jpg', caption: '北风呼呼',     note: '北风呼呼地吹，也不知从哪儿来的。', date: '2025-11-17 · 冬', rot: -3 },
+    { src: './photos/12.jpg', caption: '体测',         note: '800米测试完喝奶茶，真的太爽了！', date: '2025-11-20 · 冬', rot: 6 },
+    { src: './photos/13.jpg', caption: '追剧',         note: '太深奥了，看不懂看不懂！', date: '2025-11-22 · 冬', rot: -7 },
+    { src: './photos/14.jpg', caption: '买周边',       note: '买了好多喜欢的周边！', date: '2025-12-19 · 冬', rot: 4 },
+    { src: './photos/15.jpg', caption: '圣诞节',       note: '别人的圣诞节甜甜蜜蜜，而我和xyw在宿舍玩冰与火还过不了。', date: '2025-12-25 · 冬', rot: -5 },
+    { src: './photos/16.jpg', caption: '元旦',         note: '冬日里见一面，暖和了不少。', date: '2026-01-02 · 冬', rot: 8 },
+    { src: './photos/17.jpg', caption: '打工',         note: '寒假打工存钱，真不容易啊。', date: '2026-01-14 · 冬', rot: -4 },
+    { src: './photos/18.jpg', caption: '听歌',         note: '刻在我心底的名字，你藏在尘封的位置。', date: '2026-01-30 · 冬', rot: 6 },
+    { src: './photos/19.jpg', caption: '逛街',         note: '在这座城市里，又标记了一处属于我们的地点。', date: '2026-02-10 · 冬', rot: -8 },
+    { src: './photos/20.jpg', caption: '聚餐',         note: '三角形具有稳固性！', date: '2026-02-24 · 冬', rot: 3 },
+    { src: './photos/21.jpg', caption: '做头发',       note: '不知道，反正我的头发很曼妙。', date: '2026-02-28 · 春', rot: -6 },
+    { src: './photos/22.jpg', caption: '玩游戏',       note: '四人大战蛋仔，场面一度十分混乱。', date: '2026-03-11 · 春', rot: 5 },
+    { src: './photos/23.jpg', caption: '喝酸奶',       note: 'xyw请我喝的"33"块的酸奶，贵但好喝！', date: '2026-03-23 · 春', rot: -3 },
+    { src: './photos/24.jpg', caption: 'KFC',          note: '周末KFC一日游，快乐很简单。', date: '2026-03-28 · 春', rot: 7 },
+    { src: './photos/25.jpg', caption: '扬州行',       note: '腰缠十万贯，骑鹤下扬州。', date: '2026-04-04 · 春', rot: -5 },
+    { src: './photos/26.jpg', caption: '赏樱',         note: '樱花开了，一起去看看吧。', date: '2026-04-25 · 春', rot: 4 },
+    { src: './photos/27.jpg', caption: '劳动节',       note: '劳动节聚餐，吃得很满足。', date: '2026-05-04 · 春', rot: -7 },
+    { src: './photos/28.jpg', caption: '收集周边',     note: '又收集了好多徐良的周边，开心。', date: '2026-06-11 · 夏', rot: 6 },
   ],
 
   // —— 流星许愿：吹完蜡烛后流星划过，点中许一愿 ——

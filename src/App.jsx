@@ -7,11 +7,12 @@ import ParticleBackground from './components/ParticleBackground'
 import TypewriterText from './components/TypewriterText'
 import GlassCard from './components/GlassCard'
 import TrackingProgress from './components/TrackingProgress'
+import PhotoWall from './components/PhotoWall'
 import GiftPackage from './components/GiftPackage'
 import BirthdayWishes from './components/BirthdayWishes'
 import HeartBurst from './components/HeartBurst'
 
-const ACTS = ['intro', 'tracking', 'unwrap', 'wishes']
+const ACTS = ['intro', 'tracking', 'unwrap', 'photos', 'wishes']
 
 export default function App() {
   const [act, setAct] = useState('intro') // intro → tracking → unwrap → wishes
@@ -53,8 +54,8 @@ export default function App() {
     setAct('unwrap')
   }, [trackingDone])
 
+  const goPhotos = useCallback(() => setAct('photos'), [])
   const goWishes = useCallback(() => setAct('wishes'), [])
-
   const moodIndex = ACTS.indexOf(act)
 
   return (
@@ -79,7 +80,8 @@ export default function App() {
       >
         {act === 'intro' && <Intro onDone={goTracking} />}
         {act === 'tracking' && <Tracking onComplete={goUnwrap} />}
-        {act === 'unwrap' && <GiftPackage onUnwrap={goWishes} />}
+        {act === 'unwrap' && <GiftPackage onUnwrap={goPhotos} />}
+        {act === 'photos' && <PhotoWall onDone={goWishes} />}
         {act === 'wishes' && <BirthdayWishes />}
       </section>
 
@@ -141,8 +143,8 @@ function Tracking({ onComplete }) {
 
 /* —— 幕指示器 —— */
 function ActIndicator({ act, onJump }) {
-  const labels = ['启程', '在路上', '到达', '拆惊喜']
-  const acts = ['intro', 'tracking', 'unwrap', 'wishes']
+  const labels = ['启程', '在路上', '到达', '回忆', '祝福']
+  const acts = ['intro', 'tracking', 'unwrap', 'photos', 'wishes']
   return (
     <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full glass px-3 py-1.5 safe-pb">
       {labels.map((l, i) => (

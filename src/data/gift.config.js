@@ -72,6 +72,14 @@ export const giftConfig = {
 
   // —— 落款 ——
   signoff: '—— 来自 hzh，寄给你的整个夏天',
+
+  // —— 照片墙：把照片放进 public/photos/，在这里登记 ——
+  //   src 用相对路径，caption 正面标题，note 翻转背面的话，date 日期
+  photos: [
+    { src: './photos/1.jpg', caption: '我们的开始', note: '那天阳光很好，你笑得像整片海都亮了。', date: '2024 · 春', rot: -6 },
+    { src: './photos/2.jpg', caption: '一起走过的路', note: '你说想去看海，我就想带你走遍所有海岸线。', date: '2024 · 夏', rot: 4 },
+    { src: './photos/3.jpg', caption: '平凡的一天', note: '其实什么都不做也很开心，因为是你。', date: '2024 · 秋', rot: -3 },
+  ],
 }
 
 export default giftConfig

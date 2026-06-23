@@ -32,7 +32,7 @@ export function useCountdown(dateStr) {
         days: diff,
         isToday: diff === 0,
         isPast: true,
-        label: `这是你的第 ${giftConfig.age} 个春天 · 已陪你走过 ${diff + 1} 天`,
+        label: `这是你的第 ${giftConfig.age} 个夏天 · 已陪你走过 ${diff + 1} 天`,
       })
       return
     }

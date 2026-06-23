@@ -84,7 +84,7 @@ export default function App() {
       </section>
 
       {/* 进度指示器 */}
-      <ActIndicator act={moodIndex} />
+      <ActIndicator act={moodIndex} onJump={setAct} />
 
       {/* 爱心上飘层（仅祝福页启用） */}
       {act === 'wishes' && <HeartBurst />}
@@ -140,20 +140,22 @@ function Tracking({ onComplete }) {
 }
 
 /* —— 幕指示器 —— */
-function ActIndicator({ act }) {
+function ActIndicator({ act, onJump }) {
   const labels = ['启程', '在路上', '到达', '拆惊喜']
+  const acts = ['intro', 'tracking', 'unwrap', 'wishes']
   return (
     <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full glass px-3 py-1.5 safe-pb">
       {labels.map((l, i) => (
-        <span
+        <button
+          onClick={() => onJump && onJump(acts[i])}
           key={i}
-          className={`text-[10px] transition-all ${
+          className={`cursor-pointer text-[10px] transition-all hover:text-white/80 ${
             i === act ? 'font-semibold text-petal' : 'text-white/45'
           }`}
         >
           {l}
           {i < labels.length - 1 && <span className="ml-2 text-white/20">›</span>}
-        </span>
+        </button>
       ))}
     </div>
   )

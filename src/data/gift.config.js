@@ -49,7 +49,7 @@ export const giftConfig = {
       city: '江苏·南通',
       time: '此刻',
       title: '它已经到你手里啦',
-      desc: '请轻拆封，里面装着整个春天，和一句迟到了很久的「生日快乐」。',
+      desc: '请轻拆封，里面装着整个夏天，和一句迟到了很久的「生日快乐」。',
       accent: '#f9b8d4',
     },
   ],
@@ -60,7 +60,7 @@ export const giftConfig = {
   // —— 祝福页打字机 ——
   wishLines: [
     '亲爱的春慧，',
-    '这是你的第 19 个春天，',
+    '这是你的第 19 个夏天，',
     '愿你被温柔以待，被星光偏爱，',
     '愿你眼里有光，心里有海，所盼皆所愿。',
     '生日快乐。 🎂',
@@ -71,7 +71,7 @@ export const giftConfig = {
   candleDone: '愿望已生效，正在飞向宇宙 ✨',
 
   // —— 落款 ——
-  signoff: '—— 来自 hzh，寄给你的整个春天',
+  signoff: '—— 来自 hzh，寄给你的整个夏天',
 }
 
 export default giftConfig

@@ -87,6 +87,8 @@ body {
     writing-mode: vertical-rl;
     text-orientation: upright;
     letter-spacing: 0.15em;
+    line-height: 1;
+    padding: 0.3em 0;
   }
 }
 
